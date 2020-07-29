@@ -5,8 +5,7 @@ Promise.all([
   faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
   faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
   faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
-  faceapi.nets.faceExpressionNet.loadFromUri('/models'),
-  faceapi.nets.ageGenderNet.loadFromUri('/models')
+  faceapi.nets.faceExpressionNet.loadFromUri('/models')
 ]).then(start)
 
 async function start() {
@@ -27,7 +26,7 @@ async function start() {
     container.append(canvas)
     const displaySize = { width: image.width, height: image.height }
     faceapi.matchDimensions(canvas, displaySize)
-    const detections = await faceapi.detectAllFaces(image).withFaceLandmarks().withFaceDescriptors().withFaceExpressions().withAgeAndGender()
+    const detections = await faceapi.detectAllFaces(image).withFaceLandmarks().withFaceDescriptors().withFaceExpressions()
     const dimensions = {
       width: image.width,
       height: image.height
@@ -47,13 +46,6 @@ async function start() {
   })
 }
 
-function interpolateAgePredictions(age) {
-  predictedAges = [age].concat(predictedAges).slice(0, 30);
-  const avgPredictedAge =
-    predictedAges.reduce((total, a) => total + a) / predictedAges.length;
-  return avgPredictedAge;
-}
-
 function loadLabeledImages() {
   const labels = ['Black Widow']
   return Promise.all(
@@ -61,7 +53,7 @@ function loadLabeledImages() {
       const descriptions = []
       for (let i = 1; i <= 2; i++) {
         const img = await faceapi.fetchImage(`https://raw.githubusercontent.com/WebDevSimplified/Face-Recognition-JavaScript/master/labeled_images/${label}/${i}.jpg`)
-        const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor().withFaceExpressions().withAgeAndGender()
+        const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor().withFaceExpressions()
         descriptions.push(detections.descriptor)
       }
 
